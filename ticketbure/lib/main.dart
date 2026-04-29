@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 void main() {
   runApp(TicketBureApp());
 }
 
 class TicketBureApp extends StatelessWidget {
-  const TicketBureApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,8 +18,6 @@ class TicketBureApp extends StatelessWidget {
 }
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
-
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
@@ -36,6 +33,19 @@ class _MapScreenState extends State<MapScreen> {
       eventLocation = location;
       eventPrice = price;
     });
+  }
+
+  void goToPayment() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentScreen(
+          eventName: eventName,
+          eventLocation: eventLocation,
+          eventPrice: eventPrice,
+        ),
+      ),
+    );
   }
 
   Widget buildPin({
@@ -57,15 +67,8 @@ class _MapScreenState extends State<MapScreen> {
         },
         child: Column(
           children: [
-            Icon(
-              Icons.location_on,
-              color: color,
-              size: 50,
-            ),
-            Text(
-              price,
-              style: TextStyle(color: Colors.white),
-            ),
+            Icon(Icons.location_on, color: color, size: 50),
+            Text(price),
           ],
         ),
       ),
@@ -77,7 +80,6 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background map image
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -91,11 +93,8 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          Container(
-            color: Colors.black.withOpacity(0.35),
-          ),
+          Container(color: Colors.black.withOpacity(0.4)),
 
-          // Interactive Pins
           buildPin(
             top: 220,
             left: 80,
@@ -124,31 +123,6 @@ class _MapScreenState extends State<MapScreen> {
             price: "TZS 50,000",
           ),
 
-          // Search bar
-          Positioned(
-            top: 60,
-            left: 20,
-            right: 20,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 15,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black87,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                "What's happening in Dar tonight?",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-          // Dynamic event card
           Positioned(
             bottom: 40,
             left: 20,
@@ -169,35 +143,152 @@ class _MapScreenState extends State<MapScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  SizedBox(height: 10),
-
-                  Text(
-                    "$eventLocation • $eventPrice",
-                    style: TextStyle(fontSize: 18),
-                  ),
-
+                  Text("$eventLocation • $eventPrice"),
                   SizedBox(height: 20),
-
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 15,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Buy Ticket",
-                      style: TextStyle(fontSize: 18),
-                    ),
+                    onPressed: goToPayment,
+                    child: Text("Buy Ticket"),
                   )
                 ],
               ),
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class PaymentScreen extends StatelessWidget {
+  final String eventName;
+  final String eventLocation;
+  final String eventPrice;
+
+  PaymentScreen({
+    required this.eventName,
+    required this.eventLocation,
+    required this.eventPrice,
+  });
+
+  void completePayment(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketScreen(
+          eventName: eventName,
+          eventLocation: eventLocation,
+          eventPrice: eventPrice,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Checkout")),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => completePayment(context),
+          child: Text("Complete Payment"),
+        ),
+      ),
+    );
+  }
+}
+
+class TicketScreen extends StatelessWidget {
+  final String eventName;
+  final String eventLocation;
+  final String eventPrice;
+
+  TicketScreen({
+    required this.eventName,
+    required this.eventLocation,
+    required this.eventPrice,
+  });
+
+  void goToScanner(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ScannerScreen(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("My Ticket"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              eventName,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            Text("$eventLocation • $eventPrice"),
+
+            SizedBox(height: 20),
+
+            QrImageView(
+              data: eventName,
+              size: 200,
+            ),
+
+            SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () => goToScanner(context),
+              child: Text("Simulate Entry Scan"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ScannerScreen extends StatelessWidget {
+  void validateTicket(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Ticket Verified ✅"),
+        content: Text("Entry Approved"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Done"),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Organizer Scanner"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => validateTicket(context),
+          child: Text("Scan Ticket"),
+        ),
       ),
     );
   }
