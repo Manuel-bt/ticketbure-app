@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(TicketBureApp());
 }
 
 class TicketBureApp extends StatelessWidget {
+  const TicketBureApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,99 +19,179 @@ class TicketBureApp extends StatelessWidget {
 }
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final LatLng darEsSalaam = const LatLng(-6.7924, 39.2083);
+  String eventName = "Beach Festival";
+  String eventLocation = "Kigamboni";
+  String eventPrice = "TZS 50,000";
 
-  final Set<Marker> _markers = {
-    Marker(
-      markerId: MarkerId("masaki"),
-      position: LatLng(-6.7469, 39.2753),
-      infoWindow: InfoWindow(
-        title: "Amapiano Night",
-        snippet: "TZS 20,000",
+  void updateEvent(String name, String location, String price) {
+    setState(() {
+      eventName = name;
+      eventLocation = location;
+      eventPrice = price;
+    });
+  }
+
+  Widget buildPin({
+    required double top,
+    required double left,
+    double? right,
+    required Color color,
+    required String name,
+    required String location,
+    required String price,
+  }) {
+    return Positioned(
+      top: top,
+      left: right == null ? left : null,
+      right: right,
+      child: GestureDetector(
+        onTap: () {
+          updateEvent(name, location, price);
+        },
+        child: Column(
+          children: [
+            Icon(
+              Icons.location_on,
+              color: color,
+              size: 50,
+            ),
+            Text(
+              price,
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
       ),
-    ),
-    Marker(
-      markerId: MarkerId("mlimani"),
-      position: LatLng(-6.7833, 39.2333),
-      infoWindow: InfoWindow(
-        title: "Tech Meetup",
-        snippet: "Free",
-      ),
-    ),
-    Marker(
-      markerId: MarkerId("kigamboni"),
-      position: LatLng(-6.8500, 39.3500),
-      infoWindow: InfoWindow(
-        title: "Beach Festival",
-        snippet: "TZS 50,000",
-      ),
-    ),
-  };
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: darEsSalaam,
-              zoom: 12,
+          // Background map image
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  "https://images.unsplash.com/photo-1577948000111-9c970dfe3743?q=80&w=1200",
+                ),
+                fit: BoxFit.cover,
+              ),
             ),
-            markers: _markers,
           ),
 
+          Container(
+            color: Colors.black.withOpacity(0.35),
+          ),
+
+          // Interactive Pins
+          buildPin(
+            top: 220,
+            left: 80,
+            color: Colors.purple,
+            name: "Amapiano Night",
+            location: "Masaki",
+            price: "TZS 20,000",
+          ),
+
+          buildPin(
+            top: 350,
+            left: 0,
+            right: 100,
+            color: Colors.green,
+            name: "Tech Meetup",
+            location: "Mlimani City",
+            price: "FREE",
+          ),
+
+          buildPin(
+            top: 450,
+            left: 220,
+            color: Colors.orange,
+            name: "Beach Festival",
+            location: "Kigamboni",
+            price: "TZS 50,000",
+          ),
+
+          // Search bar
           Positioned(
-            top: 50,
+            top: 60,
             left: 20,
             right: 20,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 15,
+              ),
               decoration: BoxDecoration(
                 color: Colors.black87,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 "What's happening in Dar tonight?",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
 
+          // Dynamic event card
           Positioned(
-            bottom: 30,
+            bottom: 40,
             left: 20,
             right: 20,
             child: Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.deepPurple,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(25),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Beach Festival",
+                    eventName,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Text("Kigamboni • TZS 50,000"),
-                  SizedBox(height: 15),
+
+                  SizedBox(height: 10),
+
+                  Text(
+                    "$eventLocation • $eventPrice",
+                    style: TextStyle(fontSize: 18),
+                  ),
+
+                  SizedBox(height: 20),
+
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 15,
+                      ),
+                    ),
                     onPressed: () {},
-                    child: Text("Buy Ticket"),
+                    child: Text(
+                      "Buy Ticket",
+                      style: TextStyle(fontSize: 18),
+                    ),
                   )
                 ],
               ),
