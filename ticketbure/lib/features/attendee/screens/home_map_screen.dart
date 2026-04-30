@@ -22,12 +22,40 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
 
   void addEvent(Map<String, String> event) {
     setState(() {
-      events.add(event);
+      events.add({
+        ...event,
+        "top": (200 + events.length * 40).toDouble(),
+        "left": (50 + events.length * 60).toDouble(),
+        "color": Colors.blue,
+      });
     });
   }
 
-  List<Map<String, String>> events = [
-    {"title": "Beach Festival", "location": "Kigamboni", "price": "TZS 50,000"},
+  List<Map<String, dynamic>> events = [
+    {
+      "title": "Beach Festival",
+      "location": "Kigamboni",
+      "price": "TZS 50,000",
+      "top": 450.0,
+      "left": 220.0,
+      "color": Colors.orange,
+    },
+    {
+      "title": "Amapiano Night",
+      "location": "Masaki",
+      "price": "TZS 20,000",
+      "top": 220.0,
+      "left": 80.0,
+      "color": Colors.purple,
+    },
+    {
+      "title": "Tech Meetup",
+      "location": "Mlimani City",
+      "price": "FREE",
+      "top": 350.0,
+      "left": 100.0,
+      "color": Colors.green,
+    },
   ];
 
   void goToPayment() {
@@ -88,34 +116,17 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
 
           Container(color: Colors.black.withOpacity(0.4)),
 
-          buildPin(
-            top: 220,
-            left: 80,
-            color: Colors.purple,
-            name: "Amapiano Night",
-            location: "Masaki",
-            price: "TZS 20,000",
-          ),
-
-          buildPin(
-            top: 350,
-            left: 0,
-            right: 100,
-            color: Colors.green,
-            name: "Tech Meetup",
-            location: "Mlimani City",
-            price: "FREE",
-          ),
-
-          buildPin(
-            top: 450,
-            left: 220,
-            color: Colors.orange,
-            name: "Beach Festival",
-            location: "Kigamboni",
-            price: "TZS 50,000",
-          ),
-
+          ...events.map((event) {
+            return buildPin(
+              top: event["top"],
+              left: event["left"],
+              color: event["color"],
+              name: event["title"],
+              location: event["location"],
+              price: event["price"],
+            );
+          }).toList(),
+          
           Positioned(
             bottom: 40,
             left: 20,
@@ -145,7 +156,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
           ),
         ],
       ),
-      
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
