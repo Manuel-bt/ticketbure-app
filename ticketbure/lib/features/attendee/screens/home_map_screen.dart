@@ -12,11 +12,12 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
   String eventLocation = "Kigamboni";
   String eventPrice = "TZS 50,000";
 
-  void updateEvent(String name, String location, String price) {
+  void updateEvent(String name, String location, String price, String image) {
     setState(() {
       eventName = name;
       eventLocation = location;
       eventPrice = price;
+      eventImage = image;
     });
   }
 
@@ -39,6 +40,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       "top": 450.0,
       "left": 220.0,
       "color": Colors.orange,
+      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
     },
     {
       "title": "Amapiano Night",
@@ -47,6 +49,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       "top": 220.0,
       "left": 80.0,
       "color": Colors.purple,
+      "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
     },
     {
       "title": "Tech Meetup",
@@ -55,8 +58,12 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       "top": 350.0,
       "left": 100.0,
       "color": Colors.green,
+      "image": "https://images.unsplash.com/photo-1551836022-d5d88e9218df",
     },
   ];
+
+  String eventImage =
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
 
   void goToPayment() {
     Navigator.push(
@@ -79,6 +86,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
     required String name,
     required String location,
     required String price,
+    required String image,
   }) {
     return Positioned(
       top: top,
@@ -86,35 +94,35 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       right: right,
       child: GestureDetector(
         onTap: () {
-          updateEvent(name, location, price);
+          updateEvent(name, location, price, image);
         },
         child: Column(
-  children: [
-    Container(
-      padding: EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            blurRadius: 8,
-          )
-        ],
-      ),
-      child: Icon(Icons.location_on, color: Colors.white, size: 28),
-    ),
-    SizedBox(height: 4),
-    Text(
-      price,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
-    )
-  ],
-),
+          children: [
+            Container(
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              child: Icon(Icons.location_on, color: Colors.white, size: 28),
+            ),
+            SizedBox(height: 4),
+            Text(
+              price,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -125,17 +133,14 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       body: Stack(
         children: [
           Positioned(
-  top: 60,
-  left: 20,
-  right: 20,
-  child: Text(
-    "What's happening in Dar tonight?",
-    style: TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
+            top: 60,
+            left: 20,
+            right: 20,
+            child: Text(
+              "What's happening in Dar tonight?",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -148,18 +153,18 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
           ),
 
           Container(
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [
-        Colors.black.withOpacity(0.7),
-        Colors.transparent,
-        Colors.black.withOpacity(0.7),
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    ),
-  ),
-),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black.withOpacity(0.7),
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.7),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
 
           ...events.map((event) {
             return buildPin(
@@ -169,6 +174,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
               name: event["title"],
               location: event["location"],
               price: event["price"],
+              image: event["image"],
             );
           }).toList(),
 
@@ -177,80 +183,80 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
             left: 20,
             right: 20,
             child: Positioned(
-  bottom: 30,
-  left: 20,
-  right: 20,
-  child: Container(
-    padding: EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Colors.deepPurple, Colors.purpleAccent],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(25),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.4),
-          blurRadius: 20,
-          offset: Offset(0, 10),
-        )
-      ],
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          eventName,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+              bottom: 30,
+              left: 20,
+              right: 20,
+              child: Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.deepPurple, Colors.purpleAccent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.network(
+                        eventImage,
+                        height: 150,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
 
-        SizedBox(height: 6),
+                    SizedBox(height: 15),
 
-        Text(
-          eventLocation,
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 14,
-          ),
-        ),
+                    Text(
+                      eventName,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
-        SizedBox(height: 10),
+                    SizedBox(height: 5),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              eventPrice,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.yellowAccent,
-              ),
-            ),
+                    Text(
+                      eventLocation,
+                      style: TextStyle(color: Colors.white70),
+                    ),
 
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                padding: EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                    SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          eventPrice,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.yellowAccent,
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: goToPayment,
+                          child: Text("Buy"),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              onPressed: goToPayment,
-              child: Text("Buy"),
-            )
-          ],
-        )
-      ],
-    ),
-  ),
-)
+            ),
           ),
         ],
       ),
