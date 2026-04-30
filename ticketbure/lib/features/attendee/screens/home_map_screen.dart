@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'payment_screen.dart';
+import '../../organizer/screens/create_event_screen.dart';
 
 class HomeMapScreen extends StatefulWidget {
   @override
@@ -18,6 +19,16 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       eventPrice = price;
     });
   }
+
+  void addEvent(Map<String, String> event) {
+    setState(() {
+      events.add(event);
+    });
+  }
+
+  List<Map<String, String>> events = [
+    {"title": "Beach Festival", "location": "Kigamboni", "price": "TZS 50,000"},
+  ];
 
   void goToPayment() {
     Navigator.push(
@@ -118,20 +129,33 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(eventName,
-                      style: TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  Text(
+                    eventName,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                   Text("$eventLocation • $eventPrice"),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: goToPayment,
                     child: Text("Buy Ticket"),
-                  )
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
+      ),
+      
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateEventScreen(onCreate: addEvent),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
