@@ -18,8 +18,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       "price": "TZS 50,000",
       "lat": -6.8265,
       "lng": 39.2804,
-      "image":
-          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
     },
     {
       "title": "Amapiano Night",
@@ -27,18 +26,13 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       "price": "TZS 20,000",
       "lat": -6.7460,
       "lng": 39.2890,
-      "image":
-          "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
+      "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
     },
   ];
 
   void addEvent(Map<String, dynamic> event) {
     setState(() {
-      events.add({
-        ...event,
-        "image":
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-      });
+      events.add(event);
     });
   }
 
@@ -50,9 +44,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => EventDetailsScreen(event: event),
-            ),
+            MaterialPageRoute(builder: (_) => EventDetailsScreen(event: event)),
           );
         },
       );
@@ -85,4 +77,4 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       ),
     );
   }
-}q
+}

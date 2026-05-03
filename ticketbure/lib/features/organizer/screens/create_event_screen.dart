@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 import 'map_picker_screen.dart';
 
 class CreateEventScreen extends StatefulWidget {
@@ -18,6 +20,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   double? lat;
   double? lng;
 
+  Uint8List? imageBytes;
+
+  final picker = ImagePicker();
+
+  Future<void> pickImage() async {
+    final file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file != null) {
+      final bytes = await file.readAsBytes();
+      setState(() {
+        imageBytes = bytes;
+      });
+    }
+  }
+
   void pickLocation() async {
     final result = await Navigator.push(
       context,
@@ -33,7 +50,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   void submit() {
-    if (lat == null || lng == null) return;
+    if (lat == null || lng == null || imageBytes == null) return;
 
     final event = {
       "title": titleController.text,
@@ -41,6 +58,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       "price": priceController.text,
       "lat": lat,
       "lng": lng,
+      "imageBytes": imageBytes,
     };
 
     widget.onCreate(event);
@@ -51,7 +69,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Create Event")),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
@@ -67,18 +85,34 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               controller: priceController,
               decoration: InputDecoration(labelText: "Price"),
             ),
-            SizedBox(height: 10),
+
+            SizedBox(height: 15),
+
+            ElevatedButton(
+              onPressed: pickImage,
+              child: Text(
+                imageBytes == null ? "Upload Event Image" : "Image Selected ✅",
+              ),
+            ),
+
+            if (imageBytes != null)
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Image.memory(imageBytes!, height: 120),
+              ),
+
+            SizedBox(height: 15),
+
             ElevatedButton(
               onPressed: pickLocation,
-              child: Text(lat == null
-                  ? "Pick Location on Map"
-                  : "Location Selected ✅"),
+              child: Text(
+                lat == null ? "Pick Location on Map" : "Location Selected ✅",
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: submit,
-              child: Text("Create Event"),
-            )
+
+            SizedBox(height: 25),
+
+            ElevatedButton(onPressed: submit, child: Text("Create Event")),
           ],
         ),
       ),

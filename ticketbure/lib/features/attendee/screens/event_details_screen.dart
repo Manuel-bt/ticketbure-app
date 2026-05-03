@@ -28,10 +28,9 @@ class EventDetailsScreen extends StatelessWidget {
           SizedBox(
             height: 300,
             width: double.infinity,
-            child: Image.network(
-              event["image"],
-              fit: BoxFit.cover,
-            ),
+            child: event["imageBytes"] != null
+                ? Image.memory(event["imageBytes"], fit: BoxFit.cover)
+                : Image.network(event["image"], fit: BoxFit.cover),
           ),
 
           // BACK BUTTON
@@ -53,19 +52,14 @@ class EventDetailsScreen extends StatelessWidget {
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     event["title"],
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
 
                   SizedBox(height: 10),
@@ -95,16 +89,13 @@ class EventDetailsScreen extends StatelessWidget {
                     ),
                     onPressed: () => goToPayment(context),
                     child: Center(
-                      child: Text(
-                        "Buy Ticket",
-                        style: TextStyle(fontSize: 16),
-                      ),
+                      child: Text("Buy Ticket", style: TextStyle(fontSize: 16)),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
