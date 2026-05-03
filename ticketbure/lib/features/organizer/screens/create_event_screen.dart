@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CreateEventScreen extends StatefulWidget {
   final Function(Map<String, String>) onCreate;
 
-  CreateEventScreen({required this.onCreate});
+  const CreateEventScreen({super.key, required this.onCreate});
 
   @override
   State<CreateEventScreen> createState() => _CreateEventScreenState();

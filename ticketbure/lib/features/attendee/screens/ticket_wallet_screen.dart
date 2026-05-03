@@ -7,7 +7,7 @@ class TicketWalletScreen extends StatelessWidget {
   final String eventLocation;
   final String eventPrice;
 
-  TicketWalletScreen({
+  const TicketWalletScreen({super.key, 
     required this.eventName,
     required this.eventLocation,
     required this.eventPrice,

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'payment_screen.dart';
 import '../../organizer/screens/create_event_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeMapScreen extends StatefulWidget {
+  const HomeMapScreen({super.key});
+
   @override
   State<HomeMapScreen> createState() => _HomeMapScreenState();
 }
@@ -11,6 +14,31 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
   String eventName = "Beach Festival";
   String eventLocation = "Kigamboni";
   String eventPrice = "TZS 50,000";
+  GoogleMapController? mapController;
+
+  Set<Marker> buildMarkers() {
+    return events.map((event) {
+      return Marker(
+        markerId: MarkerId(event["title"]),
+        position: LatLng(
+          -6.79 + (events.indexOf(event) * 0.01),
+          39.20 + (events.indexOf(event) * 0.01),
+        ),
+        infoWindow: InfoWindow(
+          title: event["title"],
+          snippet: event["price"],
+          onTap: () {
+            updateEvent(
+              event["title"],
+              event["location"],
+              event["price"],
+              event["image"],
+            );
+          },
+        ),
+      );
+    }).toSet();
+  }
 
   void updateEvent(String name, String location, String price, String image) {
     setState(() {
@@ -141,15 +169,16 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  "https://images.unsplash.com/photo-1577948000111-9c970dfe3743?q=80&w=1200",
-                ),
-                fit: BoxFit.cover,
-              ),
+          
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(-6.7924, 39.2083),
+              zoom: 13,
             ),
+            onMapCreated: (controller) {
+              mapController = controller;
+            },
+            markers: buildMarkers(),
           ),
 
           Container(
@@ -176,7 +205,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
               price: event["price"],
               image: event["image"],
             );
-          }).toList(),
+          }),
 
           Positioned(
             bottom: 40,

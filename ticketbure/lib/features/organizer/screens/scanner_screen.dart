@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ScannerScreen extends StatelessWidget {
+  const ScannerScreen({super.key});
+
   void validateTicket(BuildContext context) {
     showDialog(
       context: context,

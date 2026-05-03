@@ -6,7 +6,7 @@ class PaymentScreen extends StatelessWidget {
   final String eventLocation;
   final String eventPrice;
 
-  PaymentScreen({
+  const PaymentScreen({super.key, 
     required this.eventName,
     required this.eventLocation,
     required this.eventPrice,
