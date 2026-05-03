@@ -20,10 +20,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
     return events.map((event) {
       return Marker(
         markerId: MarkerId(event["title"]),
-        position: LatLng(
-          -6.79 + (events.indexOf(event) * 0.01),
-          39.20 + (events.indexOf(event) * 0.01),
-        ),
+        position: LatLng(event["lat"], event["lng"]),
         infoWindow: InfoWindow(
           title: event["title"],
           snippet: event["price"],
@@ -65,31 +62,27 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       "title": "Beach Festival",
       "location": "Kigamboni",
       "price": "TZS 50,000",
-      "top": 450.0,
-      "left": 220.0,
-      "color": Colors.orange,
+      "lat": -6.8265,
+      "lng": 39.2804,
       "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
     },
     {
       "title": "Amapiano Night",
       "location": "Masaki",
       "price": "TZS 20,000",
-      "top": 220.0,
-      "left": 80.0,
-      "color": Colors.purple,
+      "lat": -6.7460,
+      "lng": 39.2890,
       "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
     },
     {
       "title": "Tech Meetup",
       "location": "Mlimani City",
       "price": "FREE",
-      "top": 350.0,
-      "left": 100.0,
-      "color": Colors.green,
+      "lat": -6.7756,
+      "lng": 39.2399,
       "image": "https://images.unsplash.com/photo-1551836022-d5d88e9218df",
     },
   ];
-
   String eventImage =
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
 
@@ -169,7 +162,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
-          
+
           GoogleMap(
             initialCameraPosition: CameraPosition(
               target: LatLng(-6.7924, 39.2083),
