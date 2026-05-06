@@ -1,47 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../../organizer/screens/scanner_screen.dart';
 
-class TicketWalletScreen extends StatelessWidget {
+class TicketScreen extends StatelessWidget {
   final String eventName;
-  final String eventLocation;
-  final String eventPrice;
 
-  const TicketWalletScreen({super.key, 
-    required this.eventName,
-    required this.eventLocation,
-    required this.eventPrice,
-  });
-
-  void goToScanner(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScannerScreen(),
-      ),
-    );
-  }
+  TicketScreen({required this.eventName});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("My Ticket")),
+      backgroundColor: Colors.black,
+      appBar: AppBar(title: Text("Your Ticket"), backgroundColor: Colors.black),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(eventName,
-                style: TextStyle(
-                    fontSize: 24, fontWeight: FontWeight.bold)),
-            Text("$eventLocation • $eventPrice"),
-            SizedBox(height: 20),
-            QrImageView(data: eventName, size: 200),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => goToScanner(context),
-              child: Text("Simulate Entry Scan"),
-            )
-          ],
+        child: Container(
+          margin: EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(color: Colors.purple.withOpacity(0.5), blurRadius: 20),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Event title
+              Text(
+                eventName,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+
+              SizedBox(height: 10),
+
+              Text("Admit One", style: TextStyle(color: Colors.white70)),
+
+              SizedBox(height: 20),
+
+              Divider(color: Colors.white24),
+
+              SizedBox(height: 20),
+
+              // QR Code
+              QrImageView(
+                data: eventName,
+                size: 200,
+                backgroundColor: Colors.white,
+              ),
+
+              SizedBox(height: 20),
+
+              Text("Scan at entrance", style: TextStyle(color: Colors.white54)),
+
+              SizedBox(height: 10),
+
+              Divider(color: Colors.white24),
+
+              SizedBox(height: 10),
+
+              // Fake ticket ID
+              Text(
+                "Ticket ID: TB-${DateTime.now().millisecondsSinceEpoch}",
+                style: TextStyle(fontSize: 12, color: Colors.white38),
+              ),
+            ],
+          ),
         ),
       ),
     );

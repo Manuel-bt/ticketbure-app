@@ -6,7 +6,8 @@ class PaymentScreen extends StatelessWidget {
   final String eventLocation;
   final String eventPrice;
 
-  const PaymentScreen({super.key, 
+  const PaymentScreen({
+    super.key,
     required this.eventName,
     required this.eventLocation,
     required this.eventPrice,
@@ -16,11 +17,7 @@ class PaymentScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TicketWalletScreen(
-          eventName: eventName,
-          eventLocation: eventLocation,
-          eventPrice: eventPrice,
-        ),
+        builder: (context) => TicketScreen(eventName: eventName),
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPickerScreen extends StatefulWidget {
+  const MapPickerScreen({super.key});
+
   @override
   State<MapPickerScreen> createState() => _MapPickerScreenState();
 }

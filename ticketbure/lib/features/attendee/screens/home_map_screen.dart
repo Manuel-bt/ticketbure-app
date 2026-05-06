@@ -4,6 +4,8 @@ import '../../organizer/screens/create_event_screen.dart';
 import 'event_details_screen.dart';
 
 class HomeMapScreen extends StatefulWidget {
+  const HomeMapScreen({super.key});
+
   @override
   State<HomeMapScreen> createState() => _HomeMapScreenState();
 }
