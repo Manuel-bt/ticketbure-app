@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ticket_wallet_screen.dart';
+import '../../../core/data/ticket_store.dart';
 
 class StkPushScreen extends StatefulWidget {
   final String eventName;
@@ -16,36 +17,45 @@ class _StkPushScreenState extends State<StkPushScreen> {
   bool loading = false;
   String status = "";
 
-  void simulatePayment() async {
-    if (phoneController.text.isEmpty) return;
+void simulatePayment() async {
+  if (phoneController.text.isEmpty) return;
 
-    setState(() {
-      loading = true;
-      status = "Sending STK Push...";
-    });
+  setState(() {
+    loading = true;
+    status = "Sending STK Push...";
+  });
 
-    await Future.delayed(Duration(seconds: 2));
+  await Future.delayed(Duration(seconds: 2));
 
-    setState(() {
-      status = "Waiting for PIN confirmation...";
-    });
+  setState(() {
+    status = "Waiting for PIN confirmation...";
+  });
 
-    await Future.delayed(Duration(seconds: 2));
+  await Future.delayed(Duration(seconds: 2));
 
-    setState(() {
-      status = "Payment Successful ✅";
-      loading = false;
-    });
+  // ✅ SAVE TICKET
+  TicketStore.tickets.add({
+    "eventName": widget.eventName,
+    "eventPrice": widget.eventPrice,
+    "ticketId": "TB-${DateTime.now().millisecondsSinceEpoch}",
+  });
 
-    await Future.delayed(Duration(seconds: 1));
+  setState(() {
+    status = "Payment Successful ✅";
+    loading = false;
+  });
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => TicketScreen(eventName: widget.eventName),
+  await Future.delayed(Duration(seconds: 1));
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => TicketScreen(
+        eventName: widget.eventName,
       ),
-    );
-  }
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

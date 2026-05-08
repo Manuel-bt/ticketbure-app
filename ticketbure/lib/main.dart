@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/attendee/screens/home_map_screen.dart';
+import 'core/navigation/main_navigation.dart';
 
 void main() {
   runApp(TicketBureApp());
@@ -14,7 +14,7 @@ class TicketBureApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TicketBure',
       theme: ThemeData.dark(),
-      home: HomeMapScreen(),
+      home: MainNavigation(onCreate: (event) {}),
     );
   }
 }
