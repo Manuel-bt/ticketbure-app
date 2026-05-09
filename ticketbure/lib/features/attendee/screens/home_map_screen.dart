@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../../core/services/firestore_service.dart';
 import '../../organizer/screens/create_event_screen.dart';
 import 'event_details_screen.dart';
 
 class HomeMapScreen extends StatefulWidget {
-  const HomeMapScreen({super.key});
-
   @override
   State<HomeMapScreen> createState() => _HomeMapScreenState();
 }
@@ -13,40 +14,24 @@ class HomeMapScreen extends StatefulWidget {
 class _HomeMapScreenState extends State<HomeMapScreen> {
   GoogleMapController? mapController;
 
-  List<Map<String, dynamic>> events = [
-    {
-      "title": "Beach Festival",
-      "location": "Kigamboni",
-      "price": "TZS 50,000",
-      "lat": -6.8265,
-      "lng": 39.2804,
-      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-    },
-    {
-      "title": "Amapiano Night",
-      "location": "Masaki",
-      "price": "TZS 20,000",
-      "lat": -6.7460,
-      "lng": 39.2890,
-      "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-    },
-  ];
+  final firestoreService = FirestoreService();
 
-  void addEvent(Map<String, dynamic> event) {
-    setState(() {
-      events.add(event);
-    });
-  }
+  Set<Marker> buildMarkers(List docs) {
+    return docs.map((doc) {
+      final event = doc.data() as Map<String, dynamic>;
 
-  Set<Marker> buildMarkers() {
-    return events.map((event) {
       return Marker(
-        markerId: MarkerId(event["title"]),
-        position: LatLng(event["lat"], event["lng"]),
+        markerId: MarkerId(doc.id),
+        position: LatLng(
+          (event["lat"] as num).toDouble(),
+          (event["lng"] as num).toDouble(),
+        ),
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => EventDetailsScreen(event: event)),
+            MaterialPageRoute(
+              builder: (_) => EventDetailsScreen(event: event),
+            ),
           );
         },
       );
@@ -62,20 +47,33 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => CreateEventScreen(onCreate: addEvent),
+              builder: (_) => CreateEventScreen(
+                onCreate: (_) {},
+              ),
             ),
           );
         },
       ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(-6.7924, 39.2083),
-          zoom: 13,
-        ),
-        onMapCreated: (controller) {
-          mapController = controller;
+      body: StreamBuilder<QuerySnapshot>(
+        stream: firestoreService.getEvents(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final docs = snapshot.data!.docs;
+
+          return GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(-6.7924, 39.2083),
+              zoom: 13,
+            ),
+            onMapCreated: (controller) {
+              mapController = controller;
+            },
+            markers: buildMarkers(docs),
+          );
         },
-        markers: buildMarkers(),
       ),
     );
   }

@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'map_picker_screen.dart';
+import '../../../core/services/firestore_service.dart';
 
 class CreateEventScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onCreate;
@@ -16,6 +18,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   final titleController = TextEditingController();
   final locationController = TextEditingController();
   final priceController = TextEditingController();
+  final firestoreService = FirestoreService();
 
   double? lat;
   double? lng;
@@ -49,21 +52,24 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }
   }
 
-  void submit() {
-    if (lat == null || lng == null || imageBytes == null) return;
+void submit() async {
+  if (lat == null || lng == null || imageBytes == null) return;
 
-    final event = {
-      "title": titleController.text,
-      "location": locationController.text,
-      "price": priceController.text,
-      "lat": lat,
-      "lng": lng,
-      "imageBytes": imageBytes,
-    };
+  final event = {
+    "title": titleController.text,
+    "location": locationController.text,
+    "price": priceController.text,
+    "lat": lat,
+    "lng": lng,
+    "image":
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+    "createdAt": Timestamp.now(),
+  };
 
-    widget.onCreate(event);
-    Navigator.pop(context);
-  }
+  await firestoreService.addEvent(event);
+
+  Navigator.pop(context);
+}
 
   @override
   Widget build(BuildContext context) {
